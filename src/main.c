@@ -21,11 +21,27 @@ void banner(char p[]);
 void infoProduto(Produto p);
 
 void adicCarrinho(Produto p, Carrinho *c);
+void produtosNoCarrinho(Carrinho c);
 
 int main() {
     Carrinho carrinho;
+
+    carrinho.quantidade = 0;
     carrinho.produtos = malloc(sizeof(Produto));
 
+    Produto arroz = {1, "Arroizin", 17.40, 0.5};
+    Produto paes = {2, "Naes", 9.90, 0};
+    Produto suco = {3, "Suquin", 11.99, 0};
+    Produto bolo = {4, "Bolo de Cenoura", 15.50, 0};
+
+    adicCarrinho(arroz, &carrinho);
+    adicCarrinho(paes, &carrinho);
+    adicCarrinho(suco, &carrinho);
+    adicCarrinho(bolo, &carrinho);
+
+    produtosNoCarrinho(carrinho);
+
+    // TODO: verificar o tamanho do ponteiro dos produtos com o debugger
     free(carrinho.produtos);
     return 0;
 }
@@ -67,12 +83,23 @@ void infoProduto(Produto p) {
 }
 
 void adicCarrinho(Produto p, Carrinho *c) {
-    Produto *temp = realloc(c->produtos, sizeof(c->produtos) + sizeof(Produto));
-    if (temp == NULL) {
-        printf("Error reallocating memory");
-        exit(1);
+    c->quantidade++;
+    if (c->quantidade >= 1) {
+        Produto *temp = realloc(c->produtos, c->quantidade * sizeof(Produto));
+
+        if (temp == NULL) {
+            printf("Erro ao realocar memoria");
+            exit(1);
+        }
+
+        c->produtos = temp;
     }
 
-    c->produtos = temp;
     c->produtos[c->quantidade - 1] = p;
+}
+
+void produtosNoCarrinho(Carrinho c) {
+    for (int i = 0; i < c.quantidade; i++) {
+        infoProduto(c.produtos[i]);
+    }
 }
