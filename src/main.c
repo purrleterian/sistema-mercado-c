@@ -10,13 +10,23 @@ typedef struct {
 
 } Produto;
 
+typedef struct {
+    Produto *produtos;
+    int quantidade;
+
+} Carrinho;
+
 void linhaDivi(char c, int n);
 void banner(char p[]);
 void infoProduto(Produto p);
 
+void adicCarrinho(Produto p, Carrinho *c);
+
 int main() {
-    Produto arroz = {247, "Arroizin", 19.40, 0.5};
-    infoProduto(arroz);
+    Carrinho carrinho;
+    carrinho.produtos = malloc(sizeof(Produto));
+
+    free(carrinho.produtos);
     return 0;
 }
 
@@ -54,4 +64,15 @@ void infoProduto(Produto p) {
     }
     printf("\n");
     linhaDivi('-', 15);
+}
+
+void adicCarrinho(Produto p, Carrinho *c) {
+    Produto *temp = realloc(c->produtos, sizeof(c->produtos) + sizeof(Produto));
+    if (temp == NULL) {
+        printf("Error reallocating memory");
+        exit(1);
+    }
+
+    c->produtos = temp;
+    c->produtos[c->quantidade - 1] = p;
 }
