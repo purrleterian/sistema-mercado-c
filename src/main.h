@@ -7,7 +7,7 @@
 
 #define MAX_BUFFER 1000
 
-#define MERCADO_NOME "NOME MERCADO"
+#define MERCADO_NOME "Weldesmart"
 
 typedef struct {
     int id;
@@ -35,8 +35,10 @@ void menu();
 void banner(char s[]);
 void linhaDiv(int n, char c);
 
-void infoProduto(Produto p);
+void infoProduto(Produto p, int incluirN);
 int temNoCarrinho(Carrinho c, int novoId);
+int temNoSistema(Sistema s, int novoId);
+
 Produto pegarProdutoPorCodigo(int id);
 
 void comprarProduto(Sistema s, Carrinho *c, int novoId);
