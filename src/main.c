@@ -31,7 +31,7 @@ void banner(char s[]);
 void infoProduto(Produto p);
 void temNoCarrinho(Produto p);
 
-void comprarProduto(Sistema s, Carrinho c, int novoId);
+void comprarProduto(Sistema s, Carrinho *c, int novoId);
 void visualizarCarrinho(Carrinho c);
 
 void listarProdutos(Sistema s);
@@ -50,7 +50,11 @@ int main() {
 
     cadastrarProduto(&sistemaMercado, paes);
     cadastrarProduto(&sistemaMercado, suco);
-    listarProdutos(sistemaMercado);
+    // listarProdutos(sistemaMercado);
+
+    comprarProduto(sistemaMercado, &carrinhoMercado, 1);
+    comprarProduto(sistemaMercado, &carrinhoMercado, 4);
+    visualizarCarrinho(carrinhoMercado);
 
     return 0;
 }
@@ -81,13 +85,13 @@ void infoProduto(Produto p) {
     printf("\n");
 }
 
-void comprarProduto(Sistema s, Carrinho c, int novoId) {
+void comprarProduto(Sistema s, Carrinho *c, int novoId) {
     int encontrado = 0;
-    for (int i = 0; (i < s.quantidade) & (encontrado != 1); i++) {
+    for (int i = 0; i <= s.quantidade - 1; i++) {
         if (s.produtos[i].id == novoId) {
             encontrado = 1;
-            c.produtos[c.quantidade - 1] = s.produtos[i];
-            c.quantidade++;
+            c->produtos[c->quantidade] = s.produtos[i];
+            c->quantidade++;
         }
     }
 
