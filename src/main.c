@@ -1,41 +1,8 @@
+#include "main.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#define MAX_NOME 30
-#define MAX_CARR 50
-#define MAX_SIST 50
-
-typedef struct {
-    int id;
-    char nome[MAX_NOME];
-    float preco;
-    float desconto;
-
-} Produto;
-
-typedef struct {
-    Produto produtos[MAX_CARR];
-    int quantidade;
-
-} Carrinho;
-
-typedef struct {
-    Produto produtos[MAX_SIST];
-    int quantidade;
-
-} Sistema;
-
-void banner(char s[]);
-
-void infoProduto(Produto p);
-void temNoCarrinho(Produto p);
-
-void comprarProduto(Sistema s, Carrinho *c, int novoId);
-void visualizarCarrinho(Carrinho c);
-
-void listarProdutos(Sistema s);
-void cadastrarProduto(Sistema *s, Produto p);
 
 int main() {
     Sistema sistemaMercado;
@@ -45,16 +12,15 @@ int main() {
     sistemaMercado.quantidade = 0;
 
     Produto paes = {4, "Naes", 14.60, 0.1};
-
     Produto suco = {1, "Suco de Laranja", 9.90, 0};
 
     cadastrarProduto(&sistemaMercado, paes);
     cadastrarProduto(&sistemaMercado, suco);
-    // listarProdutos(sistemaMercado);
+    listarProdutos(sistemaMercado);
 
     comprarProduto(sistemaMercado, &carrinhoMercado, 1);
     comprarProduto(sistemaMercado, &carrinhoMercado, 4);
-    visualizarCarrinho(carrinhoMercado);
+    // visualizarCarrinho(carrinhoMercado);
 
     return 0;
 }
@@ -72,6 +38,13 @@ void banner(char s[]) {
     printf("\n");
 }
 
+void linhaDiv(int n, char c) {
+    for (int i = 0; i < n; i++) {
+        printf("%c", c);
+    }
+    printf("\n");
+}
+
 void infoProduto(Produto p) {
     banner(p.nome);
     printf("- ID: %d\n", p.id);
@@ -85,9 +58,19 @@ void infoProduto(Produto p) {
     printf("\n");
 }
 
+int temNoCarrinho(Carrinho c, int novoId) {
+    int encontrado = 0;
+    for (int i = 0; i < c.quantidade; i++) {
+        if (c.produtos[i].id == novoId) {
+            encontrado = 1;
+        }
+    }
+    return encontrado;
+}
+
 void comprarProduto(Sistema s, Carrinho *c, int novoId) {
     int encontrado = 0;
-    for (int i = 0; i <= s.quantidade - 1; i++) {
+    for (int i = 0; i < s.quantidade; i++) {
         if (s.produtos[i].id == novoId) {
             encontrado = 1;
             c->produtos[c->quantidade] = s.produtos[i];
@@ -101,20 +84,25 @@ void comprarProduto(Sistema s, Carrinho *c, int novoId) {
 }
 
 void listarProdutos(Sistema s) {
+    printf("Registro de Produtos: \n");
     for (int i = 0; i <= s.quantidade - 1; i++) {
         infoProduto(s.produtos[i]);
     }
+    linhaDiv(25, '-');
 }
 
 void visualizarCarrinho(Carrinho c) {
-    for (int i = 0; i <= c.quantidade - 1; i++) {
+    printf("Carrinho: \n");
+    for (int i = 0; i < c.quantidade; i++) {
         infoProduto(c.produtos[i]);
     }
+
+    linhaDiv(25, '-');
 }
 
 void cadastrarProduto(Sistema *s, Produto p) {
     int duplicado = 0;
-    for (int i = 0; i <= s->quantidade - 1; i++) {
+    for (int i = 0; i < s->quantidade; i++) {
         if (s->produtos[i].id == p.id) {
             duplicado = 1;
         }
