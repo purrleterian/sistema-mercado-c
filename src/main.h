@@ -1,16 +1,20 @@
 #ifndef MYHEADER_H
 #define MYHEADER_H
 
-#define MAX_NOME 30
+#define MAX_NOME 1000
 #define MAX_CARR 50
 #define MAX_SIST 50
 
+#define MAX_BUFFER 1000
+
+#define MERCADO_NOME "NOME MERCADO"
 
 typedef struct {
     int id;
     char nome[MAX_NOME];
     float preco;
     float desconto;
+    int n;
 
 } Produto;
 
@@ -26,7 +30,7 @@ typedef struct {
 
 } Sistema;
 
-
+void menu();
 
 void banner(char s[]);
 void linhaDiv(int n, char c);
@@ -40,5 +44,8 @@ void visualizarCarrinho(Carrinho c);
 
 void listarProdutos(Sistema s);
 void cadastrarProduto(Sistema *s, Produto p);
+
+void finalizarCompras(Carrinho *c);
+float obterTotal(Carrinho *c);
 
 #endif
