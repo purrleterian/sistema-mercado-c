@@ -75,7 +75,7 @@ void menu() {
             int resultadoProd;
             Produto novoProduto;
 
-            printf("ID unico do produto: \n");
+            printf("ID unico do produto (Numero inteiro):\n");
             printf(">> ");
 
             // fgets combinado com sscanf e um bom jeito de evitar deixar
@@ -98,7 +98,7 @@ void menu() {
             }
 
             // repetir o processo acima pros outros parametros
-            printf("Nome do produto: \n");
+            printf("Nome do produto (Limite de %d caracteres) \n", MAX_NOME);
             printf(">> ");
 
             fgets(regiBuffer, MAX_BUFFER, stdin);
@@ -111,7 +111,7 @@ void menu() {
                 printf("Erro ao registrar nome do produto\n");
             }
 
-            printf("Preco do produto: \n");
+            printf("Preco do produto (Numero decimal, separacao por ponto):\n");
             printf(">> ");
 
             fgets(regiBuffer, MAX_BUFFER, stdin);
@@ -124,7 +124,9 @@ void menu() {
                 printf("Erro ao registrar o preco do produto\n");
             }
 
-            printf("Desconto do produto: \n");
+            printf(
+                "Desconto do produto (Numero decimal, separacao por ponto): "
+                "\n");
             printf(">> ");
 
             fgets(regiBuffer, MAX_BUFFER, stdin);
@@ -152,7 +154,7 @@ void menu() {
             char idBuffer[MAX_BUFFER];
             int idNovoCarrinho;
 
-            printf("ID unico do produto: \n");
+            printf("ID unico do produto (Numero inteiro): \n");
             printf(">> ");
             fgets(idBuffer, MAX_BUFFER, stdin);
             int resultadoCarr = sscanf(idBuffer, "%d", &idNovoCarrinho);
@@ -169,7 +171,7 @@ void menu() {
             char idRemoverBuffer[MAX_BUFFER];
             int idRemover;
 
-            printf("ID unico do produto: \n");
+            printf("ID unico do produto (Numero inteiro): \n");
             printf(">> ");
             fgets(idRemoverBuffer, MAX_BUFFER, stdin);
             int resultadoRemover = sscanf(idRemoverBuffer, "%d", &idRemover);
@@ -329,9 +331,15 @@ void comprarProduto(Sistema s, Carrinho *c, int novoId) {
 
 void removerDoCarrinho(Carrinho *c, int idRemover) {
     int removerInd;
+    int unico = 0;
     for (int i = 0; i < c->quantidade; i++) {
         if (c->produtos[i].id == idRemover) {
-            removerInd = i;
+            if (c->produtos[i].n == 1) {
+                unico = 1;
+                removerInd = i;
+            } else {
+                c->produtos[i].n--;
+            }
         }
     }
 
@@ -340,17 +348,23 @@ void removerDoCarrinho(Carrinho *c, int idRemover) {
     // - trocar esse elemento com o ultimo elemento da array
     // - diminuir o tamanho da array por 1 pra empurrar pra fora o elemento
     // - aplicar alg de ordenacao
-    trocar(&c->produtos[removerInd], &c->produtos[c->quantidade - 1]);
-    c->quantidade--;
-    selectionSort(c->produtos, c->quantidade);
+    if (unico) {
+        trocar(&c->produtos[removerInd], &c->produtos[c->quantidade - 1]);
+        c->quantidade--;
+        selectionSort(c->produtos, c->quantidade);
+    }
 }
 
 void listarProdutos(Sistema s) {
     printf("Registro de Produtos: \n");
     // loop simples que aplica a funcao infoProduto a todos os produtos do
     // sistema
-    for (int i = 0; i < s.quantidade; i++) {
-        infoProduto(s.produtos[i], 0);
+    if (s.quantidade > 0) {
+        for (int i = 0; i < s.quantidade; i++) {
+            infoProduto(s.produtos[i], 0);
+        }
+    } else {
+        printf("Registro Vazio\n");
     }
     linhaDiv(25, '-');
 }
@@ -360,8 +374,12 @@ void visualizarCarrinho(Carrinho c) {
 
     // loop simples que aplica a funcao infoProduto a todos os produtos do
     // carrinho
-    for (int i = 0; i < c.quantidade; i++) {
-        infoProduto(c.produtos[i], 1);
+    if (c.quantidade > 0) {
+        for (int i = 0; i < c.quantidade; i++) {
+            infoProduto(c.produtos[i], 1);
+        }
+    } else {
+        printf("Carrinho Vazio\n");
     }
 
     linhaDiv(25, '-');
@@ -410,10 +428,18 @@ float obterTotal(Carrinho *c) {
 
 Produto pegarProdutoPorCodigo(Sistema s, int id) {
     // eu implementei esta funcao pois ela tava no documento explicativo, mas
-    // ela acabou nao sendo muito necessaria
+    // ela acabou nao sendo muito necessaria.
+    int encontrado = 0;
+    int j;
     for (int i = 0; i < s.quantidade; i++) {
         if (s.produtos[i].id == id) {
-            return s.produtos[i];
+            encontrado = 1;
+            j = i;
         }
+    }
+    if (!encontrado) {
+        return (Produto){-1, "Erro", 0, 0};
+    } else {
+        return s.produtos[j];
     }
 }
