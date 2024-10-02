@@ -30,6 +30,9 @@ typedef struct {
 
 } Sistema;
 
+void trocar(Produto *a, Produto *b);
+void selectionSort(Produto *p, int size);
+
 void menu();
 
 void banner(char s[]);
@@ -39,10 +42,11 @@ void infoProduto(Produto p, int incluirN);
 int temNoCarrinho(Carrinho c, int novoId);
 int temNoSistema(Sistema s, int novoId);
 
-Produto pegarProdutoPorCodigo(int id);
+Produto pegarProdutoPorCodigo(Sistema s, int id);
 
 void comprarProduto(Sistema s, Carrinho *c, int novoId);
 void visualizarCarrinho(Carrinho c);
+void removerDoCarrinho(Carrinho *c, int idRemover);
 
 void listarProdutos(Sistema s);
 void cadastrarProduto(Sistema *s, Produto p);

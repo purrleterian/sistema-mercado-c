@@ -23,6 +23,26 @@ int main() {
     return 0;
 }
 
+void trocar(Produto *a, Produto *b) {
+    Produto temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void selectionSort(Produto *p, int size) {
+    int smallest;
+
+    for (int i = 0; i < size; i++) {
+        smallest = i;
+        for (int j = i; j < size; j++) {
+            if (p[j].id < p[smallest].id) {
+                smallest = j;
+            }
+        }
+        trocar(&p[i], &p[smallest]);
+    }
+}
+
 void menu() {
     // Buffer pra guardar o input do usuario que determina a acao
     char escolhaFluxo[MAX_BUFFER];
@@ -32,10 +52,11 @@ void menu() {
     linhaDiv(30, '-');
     printf("(1) Adicionar produto ao registro do sistema\n");
     printf("(2) Adicionar produto ao carrinho\n");
-    printf("(3) Listar os produtos no registro\n");
-    printf("(4) Listar os produtos no carrinho\n");
-    printf("(5) Concluir compras\n");
-    printf("(6) Sair\n");
+    printf("(3) Remover produto do carrinho\n");
+    printf("(4) Listar os produtos no registro\n");
+    printf("(5) Listar os produtos no carrinho\n");
+    printf("(6) Concluir compras\n");
+    printf("(7) Sair\n");
 
     printf(">> ");
     fgets(escolhaFluxo, MAX_BUFFER, stdin);
@@ -145,14 +166,31 @@ void menu() {
             break;
 
         case 3:
-            listarProdutos(sistemaMercado);
+            char idRemoverBuffer[MAX_BUFFER];
+            int idRemover;
+
+            printf("ID unico do produto: \n");
+            printf(">> ");
+            fgets(idRemoverBuffer, MAX_BUFFER, stdin);
+            int resultadoRemover = sscanf(idRemoverBuffer, "%d", &idRemover);
+            if (resultadoRemover == 1) {
+                removerDoCarrinho(&carrinhoMercado, idRemover);
+
+            } else {
+                printf("\nErro ao receber input\n");
+            }
+
             break;
 
         case 4:
-            visualizarCarrinho(carrinhoMercado);
+            listarProdutos(sistemaMercado);
             break;
 
         case 5:
+            visualizarCarrinho(carrinhoMercado);
+            break;
+
+        case 6:
             // Ao concluir as compras:
             // - somar os precos no carrinho
             // - retornar o total
@@ -169,7 +207,7 @@ void menu() {
             finalizarCompras(&carrinhoMercado);
             break;
 
-        case 6:
+        case 7:
             rodando = 0;
             exit(0);
             break;
@@ -285,6 +323,26 @@ void comprarProduto(Sistema s, Carrinho *c, int novoId) {
     } else {
         printf("Produto com ID %d nao registrado no sistema\n", novoId);
     }
+
+    selectionSort(c->produtos, c->quantidade);
+}
+
+void removerDoCarrinho(Carrinho *c, int idRemover) {
+    int removerInd;
+    for (int i = 0; i < c->quantidade; i++) {
+        if (c->produtos[i].id == idRemover) {
+            removerInd = i;
+        }
+    }
+
+    // Pra remover um elemento da lista e um pouco complicado.
+    // - Primeiro, encontrar indice do elemento a remover
+    // - trocar esse elemento com o ultimo elemento da array
+    // - diminuir o tamanho da array por 1 pra empurrar pra fora o elemento
+    // - aplicar alg de ordenacao
+    trocar(&c->produtos[removerInd], &c->produtos[c->quantidade - 1]);
+    c->quantidade--;
+    selectionSort(c->produtos, c->quantidade);
 }
 
 void listarProdutos(Sistema s) {
@@ -318,6 +376,8 @@ void cadastrarProduto(Sistema *s, Produto p) {
         s->produtos[s->quantidade] = p;
         ++s->quantidade;
     }
+
+    selectionSort(s->produtos, s->quantidade);
 }
 
 void finalizarCompras(Carrinho *c) {
@@ -346,4 +406,14 @@ float obterTotal(Carrinho *c) {
         total += preco;
     }
     return total;
+}
+
+Produto pegarProdutoPorCodigo(Sistema s, int id) {
+    // eu implementei esta funcao pois ela tava no documento explicativo, mas
+    // ela acabou nao sendo muito necessaria
+    for (int i = 0; i < s.quantidade; i++) {
+        if (s.produtos[i].id == id) {
+            return s.produtos[i];
+        }
+    }
 }
