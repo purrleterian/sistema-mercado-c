@@ -202,7 +202,7 @@ void menu() {
             banner("Recibo");
 
             linhaDiv(35, '*');
-            printf("Total: %.2f", obterTotal(&carrinhoMercado));
+            printf("Total: %.2f\n", obterTotal(&carrinhoMercado));
 
             linhaDiv(35, '*');
             printf("\n");

@@ -27,7 +27,7 @@ Entre os conceitos estudados em sala implementados no programa, estão:
 ### Funcionalidades de Destaque/Funcionalidades adicionais:
 
 - Remoção de produtos do carrinho
-- Organização dos produtos no carrinho e no sistema através do algoritmo de ordenação por inserção
+- Organização dos produtos no carrinho e no sistema através do algoritmo de ordenação por seleção
 - Implementação de um sistema de descontos ao registrar um produto ao sistema
 
 ### Instruções de Compilação:
