@@ -28,6 +28,7 @@ void menu() {
     char escolhaFluxo[MAX_BUFFER];
 
     printf("\nSistema interno de compras do Mercado %s\n", MERCADO_NOME);
+    printf("Como gostaria de prosseguir?\n");
     linhaDiv(30, '-');
     printf("(1) Adicionar produto ao registro do sistema\n");
     printf("(2) Adicionar produto ao carrinho\n");
@@ -156,7 +157,15 @@ void menu() {
             // - somar os precos no carrinho
             // - retornar o total
             // - esvaziar o carrinho
+
+            printf("\n\n");
+            banner("Recibo");
+
+            linhaDiv(35, '*');
             printf("Total: %.2f", obterTotal(&carrinhoMercado));
+
+            linhaDiv(35, '*');
+            printf("\n");
             finalizarCompras(&carrinhoMercado);
             break;
 
@@ -326,10 +335,15 @@ float obterTotal(Carrinho *c) {
     // adquirir o total passando por todos os items no carrinhos, lembrando
     // de levar em consideracao os descontos
     float total = 0;
+    float preco;
     for (int i = 0; i < c->quantidade; i++) {
-        total += (c->produtos[i].preco -
-                  (c->produtos[i].preco * c->produtos[i].desconto)) *
-                 c->produtos[i].n;
+        preco = (c->produtos[i].preco -
+                 (c->produtos[i].preco * c->produtos[i].desconto)) *
+                c->produtos[i].n;
+        printf("* %s x %d - %.2f\n", c->produtos[i].nome, c->produtos[i].n,
+               preco);
+
+        total += preco;
     }
     return total;
 }
